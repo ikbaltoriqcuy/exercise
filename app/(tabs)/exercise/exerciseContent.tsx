@@ -252,7 +252,7 @@ function ExerciseItem(props: { item: ContentVertical, scrollOffset: SharedValue<
       <View style={stylesExerciseItem.progressContainer}>
         <AnimatedCircularProgress
           style={{ marginLeft: 8 }}
-          size={160}
+          size={140}
           width={30}
           fill={80}
           tintColor={item.colorProgress}
@@ -317,7 +317,7 @@ const stylesStopWatch = StyleSheet.create({
     marginBottom: 10,
   },
   timerText: {
-    fontSize: 48,
+    fontSize: 42,
     fontWeight: "bold",
     color: "white",
     letterSpacing: 5,
@@ -325,14 +325,14 @@ const stylesStopWatch = StyleSheet.create({
   },
   startButton: {
     backgroundColor: "#3e3e3e",
-    height: 70,
-    width: 70,
+    height: 60,
+    width: 60,
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
   },
   startButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#FD7231",
     fontWeight: "bold",
   },
@@ -380,7 +380,7 @@ const stylesExerciseItem = StyleSheet.create({
     alignItems: "center",
   },
   progressText: {
-    marginLeft: 60,
+    marginLeft: 50,
     width: 60,
     position: "absolute",
     flexDirection: "column",
