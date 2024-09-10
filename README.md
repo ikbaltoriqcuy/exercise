@@ -17,5 +17,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```
 
 # video
-https://github.com/user-attachments/assets/ec0f7d4b-9941-45dd-a221-3ec771f32b55
+
+https://github.com/user-attachments/assets/3e47dc02-dda0-442e-98d2-ed978d6d4666
+
+
 
