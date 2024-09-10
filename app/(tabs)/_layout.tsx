@@ -1,37 +1,35 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React from "react";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { View, StyleSheet } from "react-native";
+import Profile from "./profile/profile";
+import ExerciseContent from "./exercise/exerciseContent";
+import BottomSheetContent from "./bottom/bottomSheetContent";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomNavigation from "./navigation/BottomNavigation";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function Exercise() {
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <View style={styles.container}>
+      <Profile />
+      <GestureHandlerRootView>
+        <View style={styles.bottomSheet}>
+          <ExerciseContent />
+          <BottomSheetContent />
+        </View>
+        <BottomNavigation/>
+      </GestureHandlerRootView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#1E1E1E",
+  },
+  bottomSheet: {
+    flex: 1,
+    zIndex: 1000,
+  },
+});
