@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, createRef, useRef } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,9 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  Easing,
+  NativeSyntheticEvent,
+   NativeScrollEvent
 } from "react-native";
 import { Circle } from "react-native-svg";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -138,9 +141,11 @@ function StopWatch(props: {scrollOffsetHorizontal: SharedValue<number>, index: n
           scale: interpolate(
             input,
             inputRange,
-            [1, 1, 0.8],
+            [0.9, 1, 0.8],
             Extrapolate.CLAMP
-          ),
+          )
+        }, {
+          translateX: -25
         },
       ],
     };
@@ -173,7 +178,7 @@ function ExerciseDataList(props: {scrollOffsetHorizontal: SharedValue<number>, i
   const ITEM_HEIGHT_SNAP = height * 0.285;
 
   const scrollOffsetVertical = useSharedValue(0);
-
+  const [snapIndex, setSnapIndex] = useState(0);
 
   const { scrollOffsetHorizontal, index } = props;
   const ITEM_WIDTH = width * 0.9;
@@ -188,13 +193,19 @@ function ExerciseDataList(props: {scrollOffsetHorizontal: SharedValue<number>, i
           scale: interpolate(
             input,
             inputRange,
-            [0.9, 1, 0.9],
+            [0.8, 1, 0.9],
             Extrapolate.CLAMP
           ),
-        },
+        }
       ],
     };
   });
+
+  const handleSnap = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const index = Math.round(offsetY / ITEM_HEIGHT_SNAP); 
+    setSnapIndex(index)
+  };
 
   
   return (
@@ -203,14 +214,17 @@ function ExerciseDataList(props: {scrollOffsetHorizontal: SharedValue<number>, i
       snapToInterval={ITEM_HEIGHT_SNAP}
       snapToAlignment="center"
       decelerationRate="fast"
-      onScroll={(event) => scrollOffsetVertical.value = event.nativeEvent.contentOffset.y }
+      onScroll={(event) => {
+        scrollOffsetVertical.value = event.nativeEvent.contentOffset.y 
+      }}
+      onMomentumScrollEnd={handleSnap}
       showsVerticalScrollIndicator={false}
     >
       <FlatList
         style={stylesMain.container}
         data={ContensVertical}
         renderItem={({ item, index }) => (
-          <ExerciseItem item={item} scrollOffset={scrollOffsetVertical} index={index}/>
+          <ExerciseItem item={item} snapIndex={snapIndex} scrollOffset={scrollOffsetVertical} index={index}/>
         )}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
@@ -220,27 +234,36 @@ function ExerciseDataList(props: {scrollOffsetHorizontal: SharedValue<number>, i
   );
 }
 
-function ExerciseItem(props: { item: ContentVertical, scrollOffset: SharedValue<number>, index: number  }) {
-  const { item, scrollOffset, index } = props;
+function ExerciseItem(props: { item: ContentVertical, snapIndex: number,  scrollOffset: SharedValue<number>, index: number }) {
+  const { item, snapIndex, scrollOffset, index } = props;
   const ITEM_HEIGHT = height * 0.26;
+  const fill = useRef(0)
+
+  if (snapIndex == index) {
+    fill.current = 80
+  } else {
+    fill.current = 0
+  }
 
   const animatedStyle = useAnimatedStyle(() => {
     const input = scrollOffset.value / ITEM_HEIGHT;
     const inputRange = [index - 1, index, index + 1];
+    const scale = interpolate(
+      input,
+      inputRange,
+      [0.8, 1, 0.8],
+      Extrapolate.CLAMP
+    )
 
     return {
       transform: [
         {
-          scale: interpolate(
-            input,
-            inputRange,
-            [0.8, 1, 0.8],
-            Extrapolate.CLAMP
-          ),
+          scale: scale,
         },
       ],
     };
   });
+
   
   return (
     <Animated.View style = {[stylesExerciseItem.container, animatedStyle] }>
@@ -254,9 +277,8 @@ function ExerciseItem(props: { item: ContentVertical, scrollOffset: SharedValue<
           style={{ marginLeft: 8 }}
           size={140}
           width={30}
-          fill={80}
+          fill={fill.current}
           tintColor={item.colorProgress}
-          onAnimationComplete={() => console.log("onAnimationComplete")}
           backgroundColor="#3d5875"
           lineCap="round"
           renderCap={({ center }) => (

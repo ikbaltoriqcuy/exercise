@@ -65,14 +65,13 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     height: 80,
     width: "80%",
-    // iOS Shadow
+
     shadowColor: '#fff', 
     shadowOffset: { width: 0, height: 2 }, 
     shadowOpacity: 0.8, 
     shadowRadius: 10, 
 
-    // Android Shadow
-    elevation: 20, 
+    elevation: 10
   },
   navigationitem: {
     flexDirection: "column",
